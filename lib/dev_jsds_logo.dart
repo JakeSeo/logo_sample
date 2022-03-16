@@ -6,9 +6,10 @@ class DevJSDSLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      height: 300,
+    return Container(
+      color: Colors.white,
+      width: 100,
+      height: 100,
       child: CustomPaint(
         painter: DevJSDSLogoPainter(),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logo_sample/clock_view.dart';
+import 'package:logo_sample/dev_jsds_logo.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         alignment: Alignment.center,
         color: const Color(0xFF2D2F41),
-        child: ClockView(),
+        child: DevJSDSLogo(),
       ),
     );
   }
