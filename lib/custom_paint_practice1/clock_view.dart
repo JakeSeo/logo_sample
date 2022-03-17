@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+// Reference: https://www.youtube.com/watch?v=HyAeZKWWuxA&list=PL3wGb9_yWsvKfjFgXntI_uxUV7R0L0Act
 class ClockView extends StatefulWidget {
   const ClockView({Key? key}) : super(key: key);
 

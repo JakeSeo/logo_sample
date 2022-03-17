@@ -10,6 +10,8 @@ class DevJSDSLogo extends StatefulWidget {
   State<DevJSDSLogo> createState() => _DevJSDSLogoState();
 }
 
+// Reference: https://stackoverflow.com/questions/50978603/how-to-animate-a-path-in-flutter
+
 class _DevJSDSLogoState extends State<DevJSDSLogo>
     with TickerProviderStateMixin {
   late Animation<double> animation;

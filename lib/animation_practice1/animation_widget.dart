@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:logo_sample/animation_practice1/my_animation.dart';
 import 'package:logo_sample/animation_practice1/particle.dart';
+import 'package:logo_sample/animation_practice1/uitls.dart';
 import 'package:logo_sample/homepage.dart';
 
+// Reference: https://www.youtube.com/watch?v=-LAXoH7hL_M
 class AnimationWidget extends StatefulWidget {
   const AnimationWidget({Key? key}) : super(key: key);
 
@@ -22,13 +25,13 @@ class _AnimationWidgetState extends State<AnimationWidget> {
     Duration duration = const Duration(milliseconds: 1000 ~/ 60);
     timer = Timer.periodic(duration, (timer) {
       setState(() {
-        // TODO: update animation
         for (int i = 0; i < particles.length; i++) {
           Particle p = particles[i];
-          p.pos += Offset(p.dx, p.dy);
-          if (p.pos.dx + p.radius < 0 || p.pos.dy + p.radius < 0) {
-            particles.removeAt(i);
-            i--;
+          bool randomBool = Utils.range(0, 1) == 1;
+          if (randomBool) {
+            p.pos += Offset(p.dx, p.dy);
+          } else {
+            p.pos -= Offset(p.dx, p.dy);
           }
         }
       });
