@@ -18,16 +18,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flutter Overlay Animation"),
+        title: const Text("dev.jsds"),
       ),
-      body: Container(
-        child: Container(
-            child: Stack(
-          children: [
-            AnimationWidget(),
-          ],
-        )),
-      ),
+      body:
+          Container(alignment: Alignment.center, child: DevJSDSLogo(size: 400)),
     );
   }
 }

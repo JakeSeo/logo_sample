@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:logo_sample/dev_jsds_logo_painter.dart';
 
 class DevJSDSLogo extends StatefulWidget {
-  const DevJSDSLogo({Key? key}) : super(key: key);
+  final double size;
+  const DevJSDSLogo({Key? key, this.size = 300}) : super(key: key);
 
   @override
   State<DevJSDSLogo> createState() => _DevJSDSLogoState();
@@ -14,40 +15,18 @@ class DevJSDSLogo extends StatefulWidget {
 
 class _DevJSDSLogoState extends State<DevJSDSLogo>
     with TickerProviderStateMixin {
-  late Animation<double> animation;
-  late AnimationController controller;
   @override
   void initState() {
     super.initState();
-
-    controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 4),
-    );
-    Tween<double> _rotationTween = Tween(begin: -pi, end: pi);
-    animation = _rotationTween.animate(controller)
-      ..addListener(() {
-        setState(() {});
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          controller.repeat();
-        } else if (status == AnimationStatus.dismissed) {
-          controller.forward();
-        }
-      });
-
-    controller.forward();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      width: 300,
-      height: 300,
+      width: widget.size,
+      height: widget.size,
       child: CustomPaint(
-        painter: DevJSDSLogoPainter(scale: 3),
+        painter: DevJSDSLogoPainter(scale: widget.size / 100),
       ),
     );
   }
