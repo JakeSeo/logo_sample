@@ -1,15 +1,116 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class DevJSDSLogoPainter extends CustomPainter {
-  DevJSDSLogoPainter({this.scale = 1});
+  final Animation<double> _animation;
+
+  DevJSDSLogoPainter(this._animation, this.scale) : super(repaint: _animation);
 
   double scale;
 
   final double strokeWidth = 10;
 
+  Path createAnimatedPath(
+    Path originalPath,
+    double animationPercent,
+  ) {
+    // ComputeMetrics can only be iterated once!
+    final totalLength = originalPath
+        .computeMetrics()
+        .fold(0.0, (double prev, PathMetric metric) => prev + metric.length);
+
+    final currentLength = totalLength * animationPercent;
+
+    return extractPathUntilLength(originalPath, currentLength);
+  }
+
+  Path extractPathUntilLength(
+    Path originalPath,
+    double length,
+  ) {
+    var currentLength = 0.0;
+
+    final path = Path();
+
+    var metricsIterator = originalPath.computeMetrics().iterator;
+
+    while (metricsIterator.moveNext()) {
+      var metric = metricsIterator.current;
+
+      var nextLength = currentLength + metric.length;
+
+      final isLastSegment = nextLength > length;
+      if (isLastSegment) {
+        final remainingLength = length - currentLength;
+        final pathSegment = metric.extractPath(0.0, remainingLength);
+
+        path.addPath(pathSegment, Offset.zero);
+        break;
+      } else {
+        // There might be a more efficient way of extracting an entire path
+        final pathSegment = metric.extractPath(0.0, metric.length);
+        path.addPath(pathSegment, Offset.zero);
+      }
+
+      currentLength = nextLength;
+    }
+
+    return path;
+  }
+
+  Path _createPathJHook() {
+    var pathJHook = Path();
+    pathJHook.moveTo(80 * scale, 35 * scale);
+    pathJHook.lineTo(80 * scale, 50 * scale);
+    pathJHook.quadraticBezierTo(80 * scale, 80 * scale, 50 * scale, 80 * scale);
+    pathJHook.quadraticBezierTo(20 * scale, 80 * scale, 20 * scale, 50 * scale);
+    pathJHook.lineTo(20 * scale, 45 * scale);
+    return pathJHook;
+  }
+
+  Path _createPathShell() {
+    var pathShell = Path();
+    pathShell.moveTo(50 * scale, 50 * scale);
+    pathShell.lineTo(50 * scale, 44.5 * scale);
+    pathShell.quadraticBezierTo(
+        50 * scale, 37 * scale, 42.5 * scale, 37 * scale);
+    pathShell.quadraticBezierTo(
+        35 * scale, 37 * scale, 35 * scale, 44.5 * scale);
+    pathShell.lineTo(35 * scale, 50 * scale);
+    pathShell.quadraticBezierTo(35 * scale, 65 * scale, 50 * scale, 65 * scale);
+    pathShell.quadraticBezierTo(65 * scale, 65 * scale, 65 * scale, 50 * scale);
+    pathShell.lineTo(65 * scale, 42.5 * scale);
+    pathShell.quadraticBezierTo(
+        65 * scale, 20 * scale, 42.5 * scale, 20 * scale);
+    pathShell.quadraticBezierTo(
+        20 * scale, 20 * scale, 20 * scale, 42.5 * scale);
+    pathShell.lineTo(20 * scale, 50 * scale);
+    pathShell.quadraticBezierTo(20 * scale, 80 * scale, 50 * scale, 80 * scale);
+    pathShell.quadraticBezierTo(80 * scale, 80 * scale, 80 * scale, 50 * scale);
+    pathShell.lineTo(80 * scale, 35 * scale);
+    return pathShell;
+  }
+
+  double _getPercentageJHook(double percentage) {
+    if (percentage < 0.6) {
+      return 0;
+    }
+    return (percentage - 0.6) / 0.4;
+  }
+
+  double _getPercentageShell(double percentage) {
+    if (percentage >= 0.6) {
+      return 1;
+    }
+    return percentage / 0.6;
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
-    var brushJDot = Paint()..color = Colors.grey;
+    final animationPercent = _animation.value;
+
+    var brushJDot = Paint()..color = const Color(0xFF919191);
     var offsetJDot = Offset(80 * scale, 20 * scale);
 
     var brushEye = Paint()..color = Colors.white;
@@ -27,36 +128,17 @@ class DevJSDSLogoPainter extends CustomPainter {
     brushShell.strokeCap = StrokeCap.round;
     brushShell.strokeWidth = strokeWidth * scale;
 
-    var pathJHook = Path();
-    pathJHook.moveTo(80 * scale, 35 * scale);
-    pathJHook.lineTo(80 * scale, 50 * scale);
-    pathJHook.quadraticBezierTo(80 * scale, 80 * scale, 50 * scale, 80 * scale);
-    pathJHook.quadraticBezierTo(20 * scale, 80 * scale, 20 * scale, 50 * scale);
-    pathJHook.lineTo(20 * scale, 45 * scale);
+    double percentageJHook = _getPercentageJHook(animationPercent);
+    double percentageShell = _getPercentageShell(animationPercent);
 
-    var pathClip = Path();
-    pathClip.moveTo(50 * scale, 50 * scale);
-    pathClip.lineTo(50 * scale, 44.5 * scale);
-    pathClip.quadraticBezierTo(
-        50 * scale, 37 * scale, 42.5 * scale, 37 * scale);
-    pathClip.quadraticBezierTo(
-        35 * scale, 37 * scale, 35 * scale, 44.5 * scale);
-    pathClip.lineTo(35 * scale, 50 * scale);
-    pathClip.quadraticBezierTo(35 * scale, 65 * scale, 50 * scale, 65 * scale);
-    pathClip.quadraticBezierTo(65 * scale, 65 * scale, 65 * scale, 50 * scale);
-    pathClip.lineTo(65 * scale, 42.5 * scale);
-    pathClip.quadraticBezierTo(
-        65 * scale, 20 * scale, 42.5 * scale, 20 * scale);
-    pathClip.quadraticBezierTo(
-        20 * scale, 20 * scale, 20 * scale, 42.5 * scale);
-    pathClip.lineTo(20 * scale, 50 * scale);
-    pathClip.quadraticBezierTo(20 * scale, 80 * scale, 50 * scale, 80 * scale);
-    pathClip.quadraticBezierTo(80 * scale, 80 * scale, 80 * scale, 50 * scale);
-    pathClip.lineTo(80 * scale, 35 * scale);
+    Path pathJHook = createAnimatedPath(_createPathJHook(), percentageJHook);
+    Path pathShell = createAnimatedPath(_createPathShell(), percentageShell);
 
     canvas.drawCircle(offsetJDot, (strokeWidth / 2) * scale, brushJDot);
-    canvas.drawPath(pathClip, brushShell);
-    canvas.drawPath(pathJHook, brushJHook);
+    canvas.drawPath(pathShell, brushShell);
+    if (percentageJHook > 0) {
+      canvas.drawPath(pathJHook, brushJHook);
+    }
     canvas.drawCircle(offsetEye, scale, brushEye);
   }
 
