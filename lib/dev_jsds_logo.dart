@@ -21,12 +21,14 @@ class _DevJSDSLogoState extends State<DevJSDSLogo>
   void _initAnimation() {
     _controller = AnimationController(vsync: this);
     _controller.duration = const Duration(seconds: 2);
-    _controller.addStatusListener((status) {
+    _controller.addStatusListener((status) async {
       print(status);
       if (status == AnimationStatus.forward) {
         _forward = true;
+        await Future.delayed(Duration(seconds: 1));
       } else if (status == AnimationStatus.reverse) {
         _forward = false;
+        await Future.delayed(Duration(seconds: 1));
       }
     });
   }

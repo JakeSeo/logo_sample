@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage>
         title: const Text("dev.jsds"),
       ),
       body:
-          Container(alignment: Alignment.center, child: DevJSDSLogo(size: 400)),
+          Container(alignment: Alignment.center, child: DevJSDSLogo(size: 100)),
     );
   }
 }

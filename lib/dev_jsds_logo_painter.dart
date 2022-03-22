@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class DevJSDSLogoPainter extends CustomPainter {
+  final LENGTH_J_HOOK = 116.76515197753906;
+  final LENGTH_J_HOOK_LONG = 151.76515197753906;
+
   final Animation<double> _animation;
 
   DevJSDSLogoPainter(this._animation, this.scale) : super(repaint: _animation);
@@ -50,6 +53,7 @@ class DevJSDSLogoPainter extends CustomPainter {
       } else {
         // There might be a more efficient way of extracting an entire path
         final pathSegment = metric.extractPath(0.0, metric.length);
+
         path.addPath(pathSegment, Offset.zero);
       }
 
@@ -59,9 +63,9 @@ class DevJSDSLogoPainter extends CustomPainter {
     return path;
   }
 
-  Path _createPathJHook() {
+  Path _createPathJHook(double startingPointX) {
     var pathJHook = Path();
-    pathJHook.moveTo(80 * scale, 35 * scale);
+    pathJHook.moveTo(80 * scale, startingPointX * scale);
     pathJHook.lineTo(80 * scale, 50 * scale);
     pathJHook.quadraticBezierTo(80 * scale, 80 * scale, 50 * scale, 80 * scale);
     pathJHook.quadraticBezierTo(20 * scale, 80 * scale, 20 * scale, 50 * scale);
@@ -131,15 +135,33 @@ class DevJSDSLogoPainter extends CustomPainter {
     double percentageJHook = _getPercentageJHook(animationPercent);
     double percentageShell = _getPercentageShell(animationPercent);
 
-    Path pathJHook = createAnimatedPath(_createPathJHook(), percentageJHook);
+    double startingPointXJHook =
+        percentageJHook * LENGTH_J_HOOK_LONG > LENGTH_J_HOOK
+            ? (LENGTH_J_HOOK_LONG - LENGTH_J_HOOK) -
+                (LENGTH_J_HOOK_LONG - (percentageJHook * LENGTH_J_HOOK_LONG))
+            : 0;
+
+    Path pathJHook = createAnimatedPath(
+        _createPathJHook(startingPointXJHook), percentageJHook);
     Path pathShell = createAnimatedPath(_createPathShell(), percentageShell);
 
-    canvas.drawCircle(offsetJDot, (strokeWidth / 2) * scale, brushJDot);
+    var brushEyeCover = Paint();
+    brushEyeCover.color = const Color(0xFF919191);
+    brushEyeCover.style = PaintingStyle.stroke;
+    brushEyeCover.strokeWidth = strokeWidth * scale;
+
+    Path pathEyeCover = Path();
+    pathEyeCover.moveTo(80 * scale, 0 * scale);
+    pathEyeCover.lineTo(80 * scale, 35 * scale);
     canvas.drawPath(pathShell, brushShell);
+    // canvas.drawPath(pathEyeCover, brushEyeCover);
     if (percentageJHook > 0) {
       canvas.drawPath(pathJHook, brushJHook);
     }
-    canvas.drawCircle(offsetEye, scale, brushEye);
+    if (startingPointXJHook >= offsetJDot.dy) {
+      canvas.drawCircle(offsetJDot, (strokeWidth / 2) * scale, brushJDot);
+      canvas.drawCircle(offsetEye, scale, brushEye);
+    }
   }
 
   @override
