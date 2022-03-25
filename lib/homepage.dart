@@ -1,11 +1,6 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:logo_sample/animation_practice1/animation_widget.dart';
-import 'package:logo_sample/animation_practice2/animated_path_painter.dart';
-import 'package:logo_sample/custom_paint_practice1/clock_view.dart';
 import 'package:logo_sample/dev_jsds_logo.dart';
+import 'package:logo_sample/dev_jsds_logo_animation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,8 +17,13 @@ class _HomePageState extends State<HomePage>
       appBar: AppBar(
         title: const Text("dev.jsds"),
       ),
-      body:
-          Container(alignment: Alignment.center, child: DevJSDSLogo(size: 100)),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          DevJSDSLogo(size: 100),
+          DevJSDSLogoAnimation(size: 100),
+        ],
+      ),
     );
   }
 }

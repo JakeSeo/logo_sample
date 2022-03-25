@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,9 +7,10 @@ class DevJSDSLogoPainter extends CustomPainter {
   final LENGTH_J_HOOK = 116.76515197753906;
   final LENGTH_J_HOOK_LONG = 151.76515197753906;
 
-  final Animation<double> _animation;
+  final Animation<double>? animation;
 
-  DevJSDSLogoPainter(this._animation, this.scale) : super(repaint: _animation);
+  DevJSDSLogoPainter({required this.scale, this.animation})
+      : super(repaint: animation);
 
   double scale;
 
@@ -63,12 +65,17 @@ class DevJSDSLogoPainter extends CustomPainter {
     return path;
   }
 
+  // TODO: Create path with perfect arc
   Path _createPathJHook(double startingPointX) {
     var pathJHook = Path();
     pathJHook.moveTo(80 * scale, startingPointX * scale);
     pathJHook.lineTo(80 * scale, 50 * scale);
-    pathJHook.quadraticBezierTo(80 * scale, 80 * scale, 50 * scale, 80 * scale);
-    pathJHook.quadraticBezierTo(20 * scale, 80 * scale, 20 * scale, 50 * scale);
+    pathJHook.arcTo(
+      Rect.fromCircle(center: const Offset(50, 50), radius: 30),
+      0,
+      pi,
+      true,
+    );
     pathJHook.lineTo(20 * scale, 45 * scale);
     return pathJHook;
   }
@@ -77,21 +84,33 @@ class DevJSDSLogoPainter extends CustomPainter {
     var pathShell = Path();
     pathShell.moveTo(50 * scale, 50 * scale);
     pathShell.lineTo(50 * scale, 44.5 * scale);
-    pathShell.quadraticBezierTo(
-        50 * scale, 37 * scale, 42.5 * scale, 37 * scale);
-    pathShell.quadraticBezierTo(
-        35 * scale, 37 * scale, 35 * scale, 44.5 * scale);
+    pathShell.arcTo(
+      Rect.fromCircle(center: const Offset(42.5, 44.5), radius: 7.5),
+      0,
+      -pi,
+      true,
+    );
     pathShell.lineTo(35 * scale, 50 * scale);
-    pathShell.quadraticBezierTo(35 * scale, 65 * scale, 50 * scale, 65 * scale);
-    pathShell.quadraticBezierTo(65 * scale, 65 * scale, 65 * scale, 50 * scale);
+    pathShell.arcTo(
+      Rect.fromCircle(center: const Offset(50, 50), radius: 15),
+      pi,
+      -pi,
+      true,
+    );
     pathShell.lineTo(65 * scale, 42.5 * scale);
-    pathShell.quadraticBezierTo(
-        65 * scale, 20 * scale, 42.5 * scale, 20 * scale);
-    pathShell.quadraticBezierTo(
-        20 * scale, 20 * scale, 20 * scale, 42.5 * scale);
+    pathShell.arcTo(
+      Rect.fromCircle(center: const Offset(42.5, 42.5), radius: 22.5),
+      0,
+      -pi,
+      true,
+    );
     pathShell.lineTo(20 * scale, 50 * scale);
-    pathShell.quadraticBezierTo(20 * scale, 80 * scale, 50 * scale, 80 * scale);
-    pathShell.quadraticBezierTo(80 * scale, 80 * scale, 80 * scale, 50 * scale);
+    pathShell.arcTo(
+      Rect.fromCircle(center: const Offset(50, 50), radius: 30),
+      pi,
+      -pi,
+      true,
+    );
     pathShell.lineTo(80 * scale, 35 * scale);
     return pathShell;
   }
@@ -112,7 +131,7 @@ class DevJSDSLogoPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final animationPercent = _animation.value;
+    double? animationPercent = animation == null ? 1.0 : animation?.value;
 
     var brushJDot = Paint()..color = const Color(0xFF919191);
     var offsetJDot = Offset(80 * scale, 20 * scale);
@@ -132,7 +151,7 @@ class DevJSDSLogoPainter extends CustomPainter {
     brushShell.strokeCap = StrokeCap.round;
     brushShell.strokeWidth = strokeWidth * scale;
 
-    double percentageJHook = _getPercentageJHook(animationPercent);
+    double percentageJHook = _getPercentageJHook(animationPercent!);
     double percentageShell = _getPercentageShell(animationPercent);
 
     double startingPointXJHook =
