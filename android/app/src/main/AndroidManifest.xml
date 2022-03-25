@@ -3,7 +3,7 @@
    <application
         android:label="dev.jsds"
         android:name="${applicationName}"
-        android:icon="@mipmap/logo_dev_jsds">
+        android:icon="@mipmap/ic_dev_jsds">
         <activity
             android:name=".MainActivity"
             android:exported="true"
